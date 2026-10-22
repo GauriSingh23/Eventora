@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/axios';
 import { FaCalendarAlt, FaMapMarkerAlt, FaSearch, FaRegClock, FaTicketAlt, FaShieldAlt } from 'react-icons/fa';
@@ -7,6 +7,8 @@ const Home = () => {
     const [events, setEvents] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const eventsRef = useRef(null);
+    const isFirstLoad = useRef(true);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -49,6 +51,11 @@ const Home = () => {
                             className="w-full pl-16 pr-6 py-5 rounded-full text-lg text-black bg-white/95 backdrop-blur-sm border-2 border-transparent focus:border-gray-500 focus:outline-none transition-all placeholder-gray-400 font-medium"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    eventsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                            }}
                         />
                     </div>
                 </div>
@@ -79,7 +86,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between mb-8 px-2 border-b border-gray-200 pb-4">
+            <div ref={eventsRef} className="flex items-center justify-between mb-8 px-2 border-b border-gray-200 pb-4 scroll-mt-24">
                 <h2 className="text-3xl font-extrabold text-gray-900">Upcoming Events</h2>
                 <div className="text-gray-500 font-medium">{events.length} results found</div>
             </div>

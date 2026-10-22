@@ -4,6 +4,10 @@ import App from './App.jsx'
 import './index.css'
 import { AuthProvider } from './context/AuthContext'
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <AuthProvider>
