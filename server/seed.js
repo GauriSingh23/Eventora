@@ -85,7 +85,7 @@ const events = [
 
 const seedDatabase = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/eventora');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/eventora');
         console.log('\n✅ MongoDB connection open...');
 
         await User.deleteMany();

@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendBookingEmail = async (userEmail, userName, eventTitle) => {
     try {
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `"${process.env.EMAIL_FROM_NAME || 'Eventora'}" <${process.env.EMAIL_USER}>`,
             to: userEmail,
             subject: `Booking Confirmed: ${eventTitle}`,
             html: `
@@ -38,7 +38,7 @@ const sendOTPEmail = async (userEmail, otp, type) => {
             : 'Please use the following OTP to verify and confirm your event booking.';
 
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `"${process.env.EMAIL_FROM_NAME || 'Eventora'}" <${process.env.EMAIL_USER}>`,
             to: userEmail,
             subject: title,
             html: `
