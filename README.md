@@ -38,21 +38,9 @@ PORT=5000
 ```
 > **Note**: For `EMAIL_PASS`, you need to generate an "App Password" from your Google Account settings, standard passwords won't work due to 2FA.
 
-### 2. Run from Outer Folder (Single Terminal)
-You can now manage both backend and frontend from the project root:
 
-```bash
-# from Eventora root
-npm install
-npm run install:all
-npm run dev
-```
 
-- `npm run dev` starts both `server` and `client` together using `concurrently`.
-- `npm run dev:all` installs dependencies (server + client) and starts both in one command.
-- `npm run start` runs backend `start` + frontend `preview` together.
-
-### 3. Install Dependencies
+### 2. Install Dependencies
 Open two separate terminals for the backend and frontend.
 
 **Backend Terminal:**
@@ -67,7 +55,7 @@ cd client
 npm install
 ```
 
-### 4. Run the Application Local Servers
+### 3. Run the Application Local Servers
 **Run Backend:**
 ```bash
 cd server
