@@ -7,6 +7,11 @@ const Booking = require('./models/Booking');
 
 dotenv.config();
 
+if (process.env.ALLOW_SEED !== 'true') {
+    console.log('Seed blocked. Set ALLOW_SEED=true to run.');
+    process.exit(0);
+}
+
 const users = [
     { name: 'Admin User', email: 'admin@eventora.com', password: 'password123', role: 'admin' },
     { name: 'Demo User', email: 'user@eventora.com', password: 'password123', role: 'user' },
@@ -52,7 +57,7 @@ const events = [
         image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=800'
     },
     {
-        title: 'Modern Art Expo 2024',
+        title: 'Modern Art Expo 2026',
         description: 'Discover breathtaking contemporary and modern arts from underground and trending artists this season.',
         date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
         location: 'Downtown Art Museum',
