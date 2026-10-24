@@ -82,7 +82,7 @@ const Home = () => {
                         <FaShieldAlt />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Secure Platform</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">All transactions and registrations are bounded by cutting-edge security and 2FA OTP tech.</p>
+                    <p className="text-gray-500 text-sm leading-relaxed">All registrations and bookings are protected with OTP-based email verification.</p>
                 </div>
             </div>
 
