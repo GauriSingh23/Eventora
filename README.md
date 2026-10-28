@@ -16,6 +16,7 @@ Eventora is a full-stack MERN application that allows users to seamlessly browse
   - Email OTP verification to authorize a booking request.
   - All booking requests (both free and paid) enter a secure 'Pending' queue for Admin verification.
   - Seat availability accurately updates and securely validates against overbooking logic.
+  - **Online Payments**: Secure online payments for paid events through Cashfree (test mode).
 - **Admin Analytics Dashboard**: Track live data such as Pending Requests, Total Revenue, and Total Confirmed Paid Clients directly from the admin panel.
 - **Email Notifications**: Automated OTP and booking confirmation emails delivered through the Brevo API.
 - **Sleek UI/UX**: Built entirely with React, Tailwind CSS, and polished with micro-interactions.
@@ -37,9 +38,11 @@ JWT_SECRET=your_random_secret_key
 BREVO_API_KEY=your_brevo_api_key
 BREVO_SENDER_EMAIL=your_verified_brevo_sender_email
 EMAIL_FROM_NAME=Eventora
+CASHFREE_APP_ID=your_cashfree_app_id
+CASHFREE_SECRET_KEY=your_cashfree_secret_key
 PORT=5000
 ```
-> **Note**: Emails are sent using the [Brevo](https://www.brevo.com) API. Create a free account, verify a sender email, generate an API key, and add them in `server/.env`.
+> **Note**: Emails are sent using the [Brevo](https://www.brevo.com) API and payments use Cashfree (test mode). Create free accounts on both, generate the API keys (Brevo: SMTP & API, Cashfree: Developers > API Keys), and add them in `server/.env`.
 
 
 ### 2. Install Dependencies
