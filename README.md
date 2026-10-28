@@ -1,6 +1,6 @@
 # Eventora - Full-Stack Event Booking Platform
 
-Eventora is a full-stack MERN application that allows users to seamlessly browse events, register with email OTP verification, and book tickets. It features an administrative dashboard for event organizers to create and manage free and paid events. All bookings can be managed manually by an admin to handle payments directly.
+Eventora is a full-stack MERN application that allows users to seamlessly browse events, register with email OTP verification, and book tickets, with online payments for paid events through Cashfree. It features an administrative dashboard for event organizers to create and manage free and paid events and confirm bookings.
 
 
 ## Features
