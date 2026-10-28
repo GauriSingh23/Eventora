@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 import { AuthContext } from '../context/AuthContext';
 import { FaCalendarAlt, FaMapMarkerAlt, FaChair, FaMoneyBillWave } from 'react-icons/fa';
+import { load } from '@cashfreepayments/cashfree-js';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -30,6 +31,27 @@ const EventDetail = () => {
         fetchEvent();
     }, [id]);
 
+    const payForBooking = async (bookingId) => {
+        try {
+            const { data } = await api.post(`/bookings/${bookingId}/pay`);
+            const cashfree = await load({ mode: import.meta.env.VITE_CASHFREE_MODE || 'sandbox' });
+            const result = await cashfree.checkout({
+                paymentSessionId: data.paymentSessionId,
+                redirectTarget: '_modal'
+            });
+
+            if (result.error) {
+                setError('Payment was not completed. Your booking request is saved as unpaid.');
+                return;
+            }
+
+            await api.post(`/bookings/${bookingId}/verify-payment`);
+            setSuccessMsg('Payment successful! Booking requested, awaiting admin confirmation.');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Payment failed');
+        }
+    };
+
     const handleBooking = async () => {
         if (!user) {
             navigate('/login');
@@ -45,11 +67,16 @@ const EventDetail = () => {
                 setShowOTP(true);
                 setSuccessMsg('OTP sent to your email. Please verify to confirm booking.');
             } else {
-                await api.post('/bookings', { eventId: event._id, otp });
-                setSuccessMsg('Booking requested! Awaiting admin confirmation.');
+                                const { data } = await api.post('/bookings', { eventId: event._id, otp });
                 setShowOTP(false);
-                // Update local seats count dynamically after booking
-                setEvent({ ...event, availableSeats: event.availableSeats - 1 });
+                setOtp('');
+
+                if (event.ticketPrice > 0) {
+                    setSuccessMsg('OTP verified. Opening payment...');
+                    await payForBooking(data.booking._id);
+                } else {
+                    setSuccessMsg('Booking requested! Awaiting admin confirmation.');
+                }
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Booking failed');

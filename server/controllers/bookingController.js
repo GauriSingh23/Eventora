@@ -122,3 +122,77 @@ exports.cancelBooking = async (req, res) => {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
+
+const CASHFREE_BASE = process.env.CASHFREE_BASE_URL || 'https://sandbox.cashfree.com/pg';
+
+const cashfreeHeaders = () => ({
+    'x-client-id': process.env.CASHFREE_APP_ID,
+    'x-client-secret': process.env.CASHFREE_SECRET_KEY,
+    'x-api-version': '2023-08-01',
+    'Content-Type': 'application/json'
+});
+
+exports.createPaymentOrder = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id);
+        if (!booking) return res.status(404).json({ message: 'Booking not found' });
+        if (booking.userId.toString() !== req.user.id) return res.status(403).json({ message: 'Not authorized' });
+        if (booking.status === 'cancelled') return res.status(400).json({ message: 'Booking is cancelled' });
+        if (booking.paymentStatus === 'paid') return res.status(400).json({ message: 'Already paid' });
+        if (booking.amount <= 0) return res.status(400).json({ message: 'This event is free' });
+
+        const orderId = `order_${booking._id}_${Date.now()}`;
+        const response = await fetch(`${CASHFREE_BASE}/orders`, {
+            method: 'POST',
+            headers: cashfreeHeaders(),
+            body: JSON.stringify({
+                order_id: orderId,
+                order_amount: booking.amount,
+                order_currency: 'INR',
+                customer_details: {
+                    customer_id: req.user.id,
+                    customer_name: req.user.name || 'Eventora user',
+                    customer_email: req.user.email,
+                    customer_phone: '9999999999'
+                }
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            return res.status(502).json({ message: data.message || 'Could not create payment order' });
+        }
+
+        booking.paymentOrderId = orderId;
+        await booking.save();
+
+        res.json({ orderId, paymentSessionId: data.payment_session_id });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+exports.verifyPayment = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id);
+        if (!booking) return res.status(404).json({ message: 'Booking not found' });
+        if (booking.userId.toString() !== req.user.id) return res.status(403).json({ message: 'Not authorized' });
+        if (!booking.paymentOrderId) return res.status(400).json({ message: 'No payment started for this booking' });
+
+        const response = await fetch(`${CASHFREE_BASE}/orders/${booking.paymentOrderId}/payments`, {
+            headers: cashfreeHeaders()
+        });
+        const payments = await response.json();
+        if (!response.ok) return res.status(502).json({ message: 'Could not verify payment' });
+
+        const success = Array.isArray(payments) && payments.find(p => p.payment_status === 'SUCCESS');
+        if (!success) return res.status(400).json({ message: 'Payment not completed' });
+
+        booking.paymentStatus = 'paid';
+        booking.paymentId = String(success.cf_payment_id);
+        await booking.save();
+
+        res.json({ message: 'Payment verified', booking });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
