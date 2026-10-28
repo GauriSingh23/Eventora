@@ -16,7 +16,7 @@ Eventora is a full-stack MERN application that allows users to seamlessly browse
   - Email OTP verification to authorize a booking request.
   - All booking requests (both free and paid) enter a secure 'Pending' queue for Admin verification.
   - Seat availability accurately updates and securely validates against overbooking logic.
-  - **Online Payments**: Secure online payments for paid events through Cashfree (test mode).
+- **Online Payments**: Secure online payments for paid events through Cashfree (test mode).
 - **Admin Analytics Dashboard**: Track live data such as Pending Requests, Total Revenue, and Total Confirmed Paid Clients directly from the admin panel.
 - **Email Notifications**: Automated OTP and booking confirmation emails delivered through the Brevo API.
 - **Sleek UI/UX**: Built entirely with React, Tailwind CSS, and polished with micro-interactions.
