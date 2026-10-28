@@ -40,7 +40,7 @@ exports.bookEvent = async (req, res) => {
             userId: req.user.id,
             eventId,
             status: 'pending',
-            paymentStatus: 'not_paid',
+            paymentStatus: event.ticketPrice === 0 ? 'paid' : 'not_paid',
             amount: event.ticketPrice
         });
 
